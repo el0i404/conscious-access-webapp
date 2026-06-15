@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OverviewIndexRouteImport } from './routes/overview/index'
+import { Route as CreateEventIndexRouteImport } from './routes/create-event/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OverviewIndexRoute = OverviewIndexRouteImport.update({
+  id: '/overview/',
+  path: '/overview/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateEventIndexRoute = CreateEventIndexRouteImport.update({
+  id: '/create-event/',
+  path: '/create-event/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create-event/': typeof CreateEventIndexRoute
+  '/overview/': typeof OverviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create-event': typeof CreateEventIndexRoute
+  '/overview': typeof OverviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/create-event/': typeof CreateEventIndexRoute
+  '/overview/': typeof OverviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/create-event/' | '/overview/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/create-event' | '/overview'
+  id: '__root__' | '/' | '/create-event/' | '/overview/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateEventIndexRoute: typeof CreateEventIndexRoute
+  OverviewIndexRoute: typeof OverviewIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/overview/': {
+      id: '/overview/'
+      path: '/overview'
+      fullPath: '/overview/'
+      preLoaderRoute: typeof OverviewIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create-event/': {
+      id: '/create-event/'
+      path: '/create-event'
+      fullPath: '/create-event/'
+      preLoaderRoute: typeof CreateEventIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateEventIndexRoute: CreateEventIndexRoute,
+  OverviewIndexRoute: OverviewIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
