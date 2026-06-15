@@ -10,74 +10,63 @@ export const Route = createFileRoute('/create-event/')({
 
 function createEvent() {
   const [isModalOpen, setIsModalOpen] = useState(true)
-  return (
-    <div className="flex flex-col h-dvh justify-center items-center">
-      <div className="create-test-box">
-        <div className="flex w-60 justify-between pt-4 items-center ">
-          <a href="/overview">
-            <BackChevron style={{ width: '24px', height: '24px' }} />
-          </a>
-          <span className="font-extrabold text-black text-2xl">NEW EVENT</span>
-        </div>
 
-        <div className="flex flex-col justify-between h-[310px]">
-          <Field>
-            <Label htmlFor="name" className="text-black font-extrabold">
-              Name
-            </Label>
-            <Input
-              className="border rounded-xl placeholder::text-gray-400"
-              type="text"
-              name="name"
-            />
-          </Field>
-          <Field>
-            <Label htmlFor="location" className="text-black">
-              Location
-            </Label>
-            <Input
-              className="border rounded-xl text-black"
-              type="text"
-              name="location"
-            />
-          </Field>
-          <div className="flex justify-between items-center">
-            <Field className="w-[40%]">
-              <Label htmlFor="date" className="text-black">
-                Date
-              </Label>
-              <Input className="border rounded-xl" type="date" name="date" />
-            </Field>
-            <span className="font-extrabold mt-5">until</span>
-            <Field className="w-[40%] items-end text-right">
-              <Label htmlFor="date" className="text-gray-400 text-[12px]">
-                (optional)
-              </Label>
-              <Input className="border rounded-xl" type="date" name="date" />
-            </Field>
+  return (
+    <div className="min-h-dvh  flex flex-col ">
+      {/* Header */}
+      <header className="flex items-center justify-between px-4 pt-4 pb-6">
+        <a href="/overview" className="p-2">
+          <BackChevron className="w-6 h-6" />
+        </a>
+
+        <span className="font-bold text-xl">NEW EVENT</span>
+
+        {/* spacer for centering title */}
+        <div className="w-10" />
+      </header>
+
+      {/* Form */}
+      <main className="flex-1 ">
+        <form className="flex flex-col gap-4 w-full">
+          <input
+            placeholder="Event title"
+            className="w-full rounded-2xl border p-4 text-base"
+          />
+
+          <input type="date" className=" rounded-2xl border p-4 text-base" />
+
+          <div className="grid grid-cols-2 gap-3">
+            <input type="time" className="rounded-2xl border p-4 text-base" />
+
+            <input type="time" className="rounded-2xl border p-4 text-base" />
           </div>
-          <div className="flex justify-between items-center">
-            <Field className="w-[40%]">
-              <Label htmlFor="time" className="text-black">
-                Time
-              </Label>
-              <Input className="border rounded-xl" type="time" name="time" />
-            </Field>
-            <span className="font-extrabold mt-5">until</span>
-            <Field className="w-[40%] text-right">
-              <Label htmlFor="time" className="text-gray-400 text-[12px]">
-                (optional)
-              </Label>
-              <Input className="border rounded-xl" type="time" name="time" />
-            </Field>
-          </div>
-        </div>
-        <div className="flex justify-center">
-          <button type="submit" className="create-test-submit-btn">
-            CREATE
-          </button>
-        </div>
-      </div>
+
+          <input
+            placeholder="Location"
+            className="w-full rounded-2xl border p-4 text-base"
+          />
+        </form>
+      </main>
+
+      {/* Sticky bottom button */}
+      <footer className="p-4">
+        <button
+          type="button"
+          className="
+        w-full
+        bg-black
+        text-white
+        p-4
+        rounded-2xl
+        text-lg
+        active:scale-[0.98]
+        cursor-pointer
+      "
+          onClick={() => navigate({ to: '/create-event' })}
+        >
+          Create Event
+        </button>
+      </footer>
     </div>
   )
 }

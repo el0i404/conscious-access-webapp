@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 
 import { useEffect, useState } from 'react'
 import Event from '../../components/event'
@@ -10,19 +10,35 @@ export const Route = createFileRoute('/overview/')({
 
 function Overview() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { navigate } = useRouter()
   const handleEdit = () => {
     setIsModalOpen(true)
   }
 
   return (
-    <div className="flex flex-col">
-      <nav className="sticky top-0 h-16  z-10 bg-white overflow-y-hidden p-5 text-center">
-        <span className="gradient-text font-extrabold text-xl">
-          CONSCIOUS ACCESS
-        </span>
-      </nav>
+    <div className="flex flex-col min-h-dvh bg-gray-50">
+      {/* TOP */}
+      <header className="sticky top-0 z-20 h-16 border-b">
+        <div className="w-full h-full flex items-center justify-center active:opacity-90">
+          <span className="gradient-text font-extrabold text-xl">
+            CONSCIOUS ACCESS
+          </span>
+        </div>
+      </header>
+
       <EventModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-      <div className="flex flex-col overflow-y-auto p-5 gap-5 justify-center items-center">
+
+      {/* SCROLLABLE CONTENT */}
+      <main
+        className="
+      flex-1
+      overflow-y-auto
+      px-4
+      py-5
+      space-y-5
+      pb-24
+    "
+      >
         <Event handleEdit={handleEdit} />
         <Event handleEdit={handleEdit} />
         <Event handleEdit={handleEdit} />
@@ -32,17 +48,40 @@ function Overview() {
         <Event handleEdit={handleEdit} />
         <Event handleEdit={handleEdit} />
         <Event handleEdit={handleEdit} />
-      </div>
-      <nav className="fixed bottom-0 h-16 z-10 bg-white overflow-y-hidden text-center flex justify-center items-center w-full">
+      </main>
+
+      {/* BOTTOM ACTION */}
+      <footer
+        className="
+    fixed
+    bottom-0
+    left-0
+    right-0
+    z-20
+    bg-white
+    border-t
+  "
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        }}
+      >
         <button
-          //   onClick={() => navigate('/create-event')}
           type="button"
-          //   onClick={() => startTransition("/create-event")}
-          className="text-black  font-extrabold text-xl border-2 rounded-2xl p-1.5"
+          className="
+      w-full
+      h-16
+      bg-black
+      text-white
+      font-bold
+      text-lg
+      active:scale-[0.98]
+      cursor-pointer
+    "
+          onClick={() => navigate({ to: '/create-event' })}
         >
           CREATE EVENT
         </button>
-      </nav>
+      </footer>
     </div>
   )
 }

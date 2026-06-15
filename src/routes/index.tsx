@@ -25,9 +25,8 @@ function Home() {
     console.log('data', data)
   }
 
-  console.log('status', status)
   return (
-    <div className="p-8">
+    <div className="p-8 app-background">
       <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
       <p className="mt-4 text-lg">
         Edit <code>src/routes/index.tsx</code> to get started.
