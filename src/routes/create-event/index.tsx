@@ -1,8 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Field, Label } from '../../components/fieldset'
 import { Input } from '../../components/input'
 import BackChevron from '../../icons/back-chevron'
+import { supabase } from '#/utils/supabase'
 
 export const Route = createFileRoute('/create-event/')({
   component: createEvent,
@@ -10,6 +11,35 @@ export const Route = createFileRoute('/create-event/')({
 
 function createEvent() {
   const [isModalOpen, setIsModalOpen] = useState(true)
+  const [createdAt, setCreatedAt] = useState('')
+  const [creatorName, setCreatorName] = useState('')
+  const [eventDate, setEventDate] = useState('')
+  const [eventName, setEventName] = useState('')
+  const [location, setLocation] = useState('')
+  const [eventId, setEventId] = useState()
+  const [timestamptz, setTimestamptz] = useState('')
+  const navigate = useNavigate()
+
+  const handleCreateEvent = async () => {
+    setCreatedAt(Date.now().toString())
+    // setEventId(Math.random().toString())
+
+    const { data, error } = await supabase
+      .from('events')
+      .insert({
+        // created_at: createdAt,
+        // creator_name: creatorName,
+        event_name: eventName,
+        location,
+        // id: eventId,
+        // timestamptz,
+      })
+      .select()
+
+    navigate({ to: '/overview' })
+
+    console.log('data', data)
+  }
 
   return (
     <div className="min-h-dvh  flex flex-col ">
@@ -31,9 +61,14 @@ function createEvent() {
           <input
             placeholder="Event title"
             className="w-full rounded-2xl border p-4 text-base"
+            onChange={(e) => setEventName(e.target.value)}
           />
 
-          <input type="date" className=" rounded-2xl border p-4 text-base" />
+          <input
+            type="date"
+            className=" rounded-2xl border p-4 text-base"
+            // onChange={(e) => setEventDate(e.target.value)}
+          />
 
           <div className="grid grid-cols-2 gap-3">
             <input type="time" className="rounded-2xl border p-4 text-base" />
@@ -44,6 +79,7 @@ function createEvent() {
           <input
             placeholder="Location"
             className="w-full rounded-2xl border p-4 text-base"
+            onChange={(e) => setLocation(e.target.value)}
           />
         </form>
       </main>
@@ -62,7 +98,7 @@ function createEvent() {
         active:scale-[0.98]
         cursor-pointer
       "
-          onClick={() => navigate({ to: '/create-event' })}
+          onClick={handleCreateEvent}
         >
           Create Event
         </button>

@@ -13,7 +13,8 @@
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
-    "check": "prettier --check ."
+    "check": "prettier --check .",
+    "types:supabase": "./node_modules/.bin/supabase gen types typescript --project-id hudevpiuccpkadadfvyl --schema public > src/types/supabase.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
@@ -44,6 +45,7 @@
     "eslint": "^9.20.0",
     "jsdom": "^28.1.0",
     "prettier": "^3.8.1",
+    "supabase": "^2.107.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "vitest": "^4.1.5"

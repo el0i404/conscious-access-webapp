@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { supabase } from '../utils/supabase'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/')({
   loader: async () => {
@@ -11,26 +11,29 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-  const { todos, status } = Route.useLoaderData()
+  //   const { todos, status } = Route.useLoaderData();
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email: username,
       password: password,
     })
 
-    console.log('data', data)
+    if (error) {
+      console.error('Login failed:', error.message)
+      return
+    }
+
+    navigate({ to: '/overview' })
   }
 
   return (
     <div className="p-8 app-background">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
       <form
         className="flex flex-col border border-red-500 p-4 gap-3 w-80"
         onSubmit={handleLogin}
@@ -49,7 +52,9 @@ function Home() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">LOGIN</button>
+        <button className="cursor-pointer" type="submit" onClick={handleLogin}>
+          LOGIN
+        </button>
       </form>
     </div>
   )
