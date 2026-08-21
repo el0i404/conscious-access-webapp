@@ -1,8 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
 
 import Event from '../../../components/event'
-import EventModal from '../../../components/event-modal'
 import { supabase } from '#/lib/supabase'
 
 export const Route = createFileRoute('/_authenticated/overview/')({
@@ -36,33 +34,125 @@ export const Route = createFileRoute('/_authenticated/overview/')({
 
 function Overview() {
   const { events } = Route.useLoaderData()
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
   const navigate = useNavigate()
 
-  const handleEdit = (event: (typeof events)[number]) => {
-    console.log('edit event:', event)
-
-    setIsModalOpen(true)
-  }
-
   return (
-    <main
-      className="px-4 pt-5"
-      style={{
-        paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
-      }}
-    >
-      {events.length === 0 ? (
-        'Empty event'
-      ) : (
-        <div className="space-y-4">
-          {events.map((event) => (
-            <Event key={event.id} event={event} />
-          ))}
+    <div className="min-h-dvh bg-gray-50">
+      {/* HEADER */}
+      <header
+        className="
+          sticky
+          top-0
+          z-20
+          border-b
+          border-gray-200
+          bg-white
+        "
+        style={{
+          paddingTop: 'env(safe-area-inset-top)',
+        }}
+      >
+        <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-4">
+          <button
+            type="button"
+            onClick={async () => {
+              await supabase.auth.signOut()
+            }}
+            className="
+              flex
+              h-11
+              min-w-11
+              items-center
+              justify-center
+              rounded-xl
+              px-2
+              text-xs
+              font-semibold
+              text-gray-500
+              active:bg-gray-100
+              active:scale-95
+            "
+          >
+            Logout
+          </button>
+
+          <span className="gradient-text text-[15px] font-extrabold">
+            CONSCIOUS ACCESS
+          </span>
+
+          <div className="min-w-11" />
         </div>
-      )}
-    </main>
+      </header>
+
+      {/* EVENTS */}
+      <main
+        className="mx-auto w-full max-w-xl px-4 pt-5"
+        style={{
+          paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
+        }}
+      >
+        {events.length === 0 ? (
+          <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+            <h2 className="text-lg font-bold text-gray-900">No events yet</h2>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Create your first event.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {events.map((event) => (
+              <Event key={event.id} event={event} />
+            ))}
+          </div>
+        )}
+      </main>
+
+      {/* CREATE EVENT */}
+      <footer
+        className="
+          fixed
+          inset-x-0
+          bottom-0
+          z-30
+          border-t
+          border-gray-200
+          bg-white
+        "
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        }}
+      >
+        <div className="mx-auto w-full max-w-xl p-4">
+          <button
+            type="button"
+            onClick={() =>
+              navigate({
+                to: '/create-event',
+              })
+            }
+            className="
+              flex
+              h-14
+              w-full
+              items-center
+              justify-center
+              rounded-2xl
+              bg-black
+              px-4
+              text-base
+              font-bold
+              tracking-wide
+              text-white
+              shadow-lg
+              shadow-black/10
+              active:scale-[0.98]
+            "
+          >
+            CREATE EVENT
+          </button>
+        </div>
+      </footer>
+    </div>
   )
 }

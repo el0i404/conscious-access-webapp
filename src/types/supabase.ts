@@ -17,21 +17,30 @@ export type Database = {
       events: {
         Row: {
           created_at: string | null
+          end_time: string | null
+          event_date: string | null
           event_name: string
           id: number
           location: string | null
+          start_time: string | null
         }
         Insert: {
           created_at?: string | null
+          end_time?: string | null
+          event_date?: string | null
           event_name: string
           id?: number
           location?: string | null
+          start_time?: string | null
         }
         Update: {
           created_at?: string | null
+          end_time?: string | null
+          event_date?: string | null
           event_name?: string
           id?: number
           location?: string | null
+          start_time?: string | null
         }
         Relationships: []
       }

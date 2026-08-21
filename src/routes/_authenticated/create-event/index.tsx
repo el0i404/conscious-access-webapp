@@ -36,6 +36,9 @@ function CreateEvent() {
       .insert({
         event_name: eventName.trim(),
         location: location.trim(),
+        end_time: endTime,
+        start_time: startTime,
+        event_date: eventDate,
       })
       .select()
       .single()
