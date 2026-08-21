@@ -14,159 +14,55 @@ export const Route = createFileRoute('/_authenticated/overview/')({
     }
   },
 
+  loader: async () => {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .order('created_at', {
+        ascending: false,
+      })
+
+    if (error) {
+      throw error
+    }
+
+    return {
+      events: data ?? [],
+    }
+  },
+
   component: Overview,
 })
 
 function Overview() {
+  const { events } = Route.useLoaderData()
+
   const [isModalOpen, setIsModalOpen] = useState(false)
+
   const navigate = useNavigate()
 
-  const handleEdit = () => {
+  const handleEdit = (event: (typeof events)[number]) => {
+    console.log('edit event:', event)
+
     setIsModalOpen(true)
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-  }
-
   return (
-    <div
-      className="
-        flex
-        min-h-screen
-        flex-col
-        bg-gray-50
-        [min-height:100dvh]
-      "
+    <main
+      className="px-4 pt-5"
+      style={{
+        paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
+      }}
     >
-      {/* HEADER */}
-      <header
-        className="
-          shrink-0
-          border-b
-          border-gray-200
-          bg-white
-        "
-        style={{
-          paddingTop: 'env(safe-area-inset-top)',
-        }}
-      >
-        <div
-          className="
-            flex
-            h-16
-            items-center
-            justify-between
-            px-4
-          "
-        >
-          {/* Logout */}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="
-              flex
-              h-11
-              min-w-11
-              items-center
-              justify-center
-              rounded-xl
-              px-2
-              text-xs
-              font-semibold
-              text-gray-500
-              active:bg-gray-100
-              active:scale-95
-            "
-          >
-            Logout
-          </button>
-
-          {/* Logo */}
-          <span
-            className="
-              gradient-text
-              text-[15px]
-              font-extrabold
-              tracking-tight
-            "
-          >
-            CONSCIOUS ACCESS
-          </span>
-
-          {/* Keeps title centered */}
-          <div className="h-11 min-w-11" />
-        </div>
-      </header>
-
-      <EventModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-
-      {/* SCROLLABLE CONTENT */}
-      <main
-        className="
-          flex-1
-          overflow-y-auto
-          overscroll-contain
-          px-4
-          pt-5
-        "
-        style={{
-          paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
-          WebkitOverflowScrolling: 'touch',
-        }}
-      >
+      {events.length === 0 ? (
+        'Empty event'
+      ) : (
         <div className="space-y-4">
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
-          <Event handleEdit={handleEdit} />
+          {events.map((event) => (
+            <Event key={event.id} event={event} />
+          ))}
         </div>
-      </main>
-
-      {/* BOTTOM ACTION */}
-      <footer
-        className="
-          fixed
-          inset-x-0
-          bottom-0
-          z-30
-          border-t
-          border-gray-200
-          bg-white
-        "
-        style={{
-          paddingBottom: 'env(safe-area-inset-bottom)',
-        }}
-      >
-        <div className="px-4 py-3">
-          <button
-            type="button"
-            className="
-              flex
-              h-14
-              w-full
-              items-center
-              justify-center
-              rounded-2xl
-              bg-black
-              px-4
-              text-base
-              font-bold
-              tracking-wide
-              text-white
-              active:scale-[0.98]
-            "
-            onClick={() => navigate({ to: '/create-event' })}
-          >
-            CREATE EVENT
-          </button>
-        </div>
-      </footer>
-    </div>
+      )}
+    </main>
   )
 }

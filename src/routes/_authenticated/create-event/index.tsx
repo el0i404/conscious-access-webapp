@@ -15,35 +15,41 @@ function CreateEvent() {
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [location, setLocation] = useState('')
+
   const [isCreating, setIsCreating] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const canCreate =
-    eventName.trim() && eventDate && startTime && location.trim()
+  const canCreate = Boolean(
+    eventName.trim() && eventDate && startTime && location.trim(),
+  )
 
-  const handleCreateEvent = async () => {
+  const handleCreateEvent = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
     if (!canCreate || isCreating) return
 
     setIsCreating(true)
+    setErrorMessage('')
 
     const { data, error } = await supabase
       .from('events')
       .insert({
         event_name: eventName.trim(),
         location: location.trim(),
-        // event_date: eventDate,
-        // start_time: startTime,
-        // end_time: endTime,
       })
       .select()
       .single()
 
     if (error) {
-      console.error(error)
+      console.error('Error creating event:', error)
+
+      setErrorMessage('Something went wrong while creating the event.')
+
       setIsCreating(false)
       return
     }
 
-    console.log('created event:', data)
+    console.log('Created event:', data)
 
     navigate({
       to: '/overview',
@@ -53,18 +59,17 @@ function CreateEvent() {
   return (
     <div className="min-h-dvh bg-white">
       {/* Header */}
-      <header className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-4 sm:px-6">
+      <header className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-4">
         <button
           type="button"
           onClick={() => navigate({ to: '/overview' })}
           className="
             flex
-            min-h-11
+            h-11
             min-w-11
             items-center
             justify-center
             rounded-full
-            transition
             active:scale-90
           "
           aria-label="Go back"
@@ -76,13 +81,16 @@ function CreateEvent() {
           NEW EVENT
         </span>
 
-        {/* Keeps title centered */}
         <div className="min-w-11" />
       </header>
 
       {/* Form */}
-      <main className="mx-auto w-full max-w-xl px-4 pb-32 pt-8 sm:px-6 sm:pt-10">
-        <div className="space-y-4">
+      <main className="mx-auto w-full max-w-xl px-4 pb-32 pt-8">
+        <form
+          id="create-event-form"
+          onSubmit={handleCreateEvent}
+          className="space-y-4"
+        >
           {/* Event name */}
           <input
             type="text"
@@ -91,17 +99,50 @@ function CreateEvent() {
             placeholder="Event title"
             autoComplete="off"
             className="
+              box-border
               h-14
               w-full
+              min-w-0
+              appearance-none
               rounded-2xl
               border
               border-gray-200
               bg-gray-50
               px-4
               text-base
+              leading-none
               text-gray-900
               outline-none
-              transition
+              placeholder:text-gray-400
+              focus:border-gray-900
+              focus:bg-white
+              focus:ring-4
+              focus:ring-gray-900/5
+            "
+          />
+
+          {/* Location */}
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Location"
+            autoComplete="street-address"
+            className="
+              box-border
+              h-14
+              w-full
+              min-w-0
+              appearance-none
+              rounded-2xl
+              border
+              border-gray-200
+              bg-gray-50
+              px-4
+              text-base
+              leading-none
+              text-gray-900
+              outline-none
               placeholder:text-gray-400
               focus:border-gray-900
               focus:bg-white
@@ -116,17 +157,20 @@ function CreateEvent() {
             value={eventDate}
             onChange={(e) => setEventDate(e.target.value)}
             className="
+              box-border
               h-14
               w-full
+              min-w-0
+              appearance-none
               rounded-2xl
               border
               border-gray-200
               bg-gray-50
               px-4
               text-base
+              leading-none
               text-gray-900
               outline-none
-              transition
               focus:border-gray-900
               focus:bg-white
               focus:ring-4
@@ -141,18 +185,19 @@ function CreateEvent() {
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
               className="
+                box-border
                 h-14
                 w-full
                 min-w-0
+                appearance-none
                 rounded-2xl
                 border
                 border-gray-200
                 bg-gray-50
-                px-4
+                px-3
                 text-base
                 text-gray-900
                 outline-none
-                transition
                 focus:border-gray-900
                 focus:bg-white
                 focus:ring-4
@@ -165,18 +210,19 @@ function CreateEvent() {
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
               className="
+                box-border
                 h-14
                 w-full
                 min-w-0
+                appearance-none
                 rounded-2xl
                 border
                 border-gray-200
                 bg-gray-50
-                px-4
+                px-3
                 text-base
                 text-gray-900
                 outline-none
-                transition
                 focus:border-gray-900
                 focus:bg-white
                 focus:ring-4
@@ -185,36 +231,16 @@ function CreateEvent() {
             />
           </div>
 
-          {/* Location */}
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Location"
-            autoComplete="street-address"
-            className="
-              h-14
-              w-full
-              rounded-2xl
-              border
-              border-gray-200
-              bg-gray-50
-              px-4
-              text-base
-              text-gray-900
-              outline-none
-              transition
-              placeholder:text-gray-400
-              focus:border-gray-900
-              focus:bg-white
-              focus:ring-4
-              focus:ring-gray-900/5
-            "
-          />
-        </div>
+          {/* Error */}
+          {errorMessage && (
+            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+              {errorMessage}
+            </p>
+          )}
+        </form>
       </main>
 
-      {/* Bottom action */}
+      {/* Submit */}
       <footer
         className="
           fixed
@@ -229,11 +255,11 @@ function CreateEvent() {
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}
       >
-        <div className="mx-auto w-full max-w-xl p-4 sm:px-6">
+        <div className="mx-auto w-full max-w-xl p-4">
           <button
-            type="button"
+            type="submit"
+            form="create-event-form"
             disabled={!canCreate || isCreating}
-            onClick={handleCreateEvent}
             className="
               flex
               h-14
@@ -246,12 +272,10 @@ function CreateEvent() {
               text-base
               font-semibold
               text-white
-              transition
               active:scale-[0.98]
               disabled:cursor-not-allowed
               disabled:bg-gray-200
               disabled:text-gray-400
-              enabled:hover:bg-gray-800
             "
           >
             {isCreating ? 'Creating...' : 'Create Event'}
