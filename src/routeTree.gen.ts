@@ -9,58 +9,88 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as OverviewIndexRouteImport } from './routes/overview/index'
-import { Route as CreateEventIndexRouteImport } from './routes/create-event/index'
+import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as AuthenticatedOverviewIndexRouteImport } from './routes/_authenticated/overview/index'
+import { Route as AuthenticatedCreateEventIndexRouteImport } from './routes/_authenticated/create-event/index'
 
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OverviewIndexRoute = OverviewIndexRouteImport.update({
-  id: '/overview/',
-  path: '/overview/',
+const LoginIndexRoute = LoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CreateEventIndexRoute = CreateEventIndexRouteImport.update({
-  id: '/create-event/',
-  path: '/create-event/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedOverviewIndexRoute =
+  AuthenticatedOverviewIndexRouteImport.update({
+    id: '/overview/',
+    path: '/overview/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCreateEventIndexRoute =
+  AuthenticatedCreateEventIndexRouteImport.update({
+    id: '/create-event/',
+    path: '/create-event/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/create-event/': typeof CreateEventIndexRoute
-  '/overview/': typeof OverviewIndexRoute
+  '/login/': typeof LoginIndexRoute
+  '/create-event/': typeof AuthenticatedCreateEventIndexRoute
+  '/overview/': typeof AuthenticatedOverviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/create-event': typeof CreateEventIndexRoute
-  '/overview': typeof OverviewIndexRoute
+  '/login': typeof LoginIndexRoute
+  '/create-event': typeof AuthenticatedCreateEventIndexRoute
+  '/overview': typeof AuthenticatedOverviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/create-event/': typeof CreateEventIndexRoute
-  '/overview/': typeof OverviewIndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/login/': typeof LoginIndexRoute
+  '/_authenticated/create-event/': typeof AuthenticatedCreateEventIndexRoute
+  '/_authenticated/overview/': typeof AuthenticatedOverviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create-event/' | '/overview/'
+  fullPaths: '/' | '/login/' | '/create-event/' | '/overview/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create-event' | '/overview'
-  id: '__root__' | '/' | '/create-event/' | '/overview/'
+  to: '/' | '/login' | '/create-event' | '/overview'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/login/'
+    | '/_authenticated/create-event/'
+    | '/_authenticated/overview/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CreateEventIndexRoute: typeof CreateEventIndexRoute
-  OverviewIndexRoute: typeof OverviewIndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  LoginIndexRoute: typeof LoginIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -68,27 +98,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/overview/': {
-      id: '/overview/'
-      path: '/overview'
-      fullPath: '/overview/'
-      preLoaderRoute: typeof OverviewIndexRouteImport
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/create-event/': {
-      id: '/create-event/'
+    '/_authenticated/overview/': {
+      id: '/_authenticated/overview/'
+      path: '/overview'
+      fullPath: '/overview/'
+      preLoaderRoute: typeof AuthenticatedOverviewIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/create-event/': {
+      id: '/_authenticated/create-event/'
       path: '/create-event'
       fullPath: '/create-event/'
-      preLoaderRoute: typeof CreateEventIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedCreateEventIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCreateEventIndexRoute: typeof AuthenticatedCreateEventIndexRoute
+  AuthenticatedOverviewIndexRoute: typeof AuthenticatedOverviewIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCreateEventIndexRoute: AuthenticatedCreateEventIndexRoute,
+  AuthenticatedOverviewIndexRoute: AuthenticatedOverviewIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CreateEventIndexRoute: CreateEventIndexRoute,
-  OverviewIndexRoute: OverviewIndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

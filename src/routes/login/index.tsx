@@ -1,17 +1,24 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { supabase } from '../lib/supabase'
-import { useEffect, useState } from 'react'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { supabase } from '../../lib/supabase'
+import { useState } from 'react'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/login/')({
   loader: async () => {
     const { data: todos, status } = await supabase.from('todos').select()
     return { todos, status }
+  },
+
+  beforeLoad: ({ context }) => {
+    if (context.user) {
+      throw redirect({
+        to: '/overview',
+      })
+    }
   },
   component: Home,
 })
 
 function Home() {
-  //   const { todos, status } = Route.useLoaderData();
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
@@ -24,12 +31,14 @@ function Home() {
       password: password,
     })
 
+    console.log('data', data)
+
     if (error) {
       console.error('Login failed:', error.message)
       return
     }
 
-    navigate({ to: '/overview' })
+    await navigate({ to: '/overview' })
   }
 
   return (

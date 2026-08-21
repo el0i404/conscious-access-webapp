@@ -1,11 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Field, Label } from '../../components/fieldset'
-import { Input } from '../../components/input'
-import BackChevron from '../../icons/back-chevron'
-import { supabase } from '#/utils/supabase'
+import BackChevron from '../../../icons/back-chevron'
+import { supabase } from '#/lib/supabase'
 
-export const Route = createFileRoute('/create-event/')({
+export const Route = createFileRoute('/_authenticated/create-event/')({
   component: createEvent,
 })
 

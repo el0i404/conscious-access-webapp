@@ -1,10 +1,17 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 
-import { useEffect, useState } from 'react'
-import Event from '../../components/event'
-import EventModal from '../../components/event-modal'
+import { useState } from 'react'
+import Event from '../../../components/event'
+import EventModal from '../../../components/event-modal'
 
-export const Route = createFileRoute('/overview/')({
+export const Route = createFileRoute('/_authenticated/overview/')({
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({
+        to: '/overview',
+      })
+    }
+  },
   component: Overview,
 })
 
