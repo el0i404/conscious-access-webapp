@@ -3,7 +3,7 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import Event from '../../../components/event'
 import { supabase } from '#/lib/supabase'
 
-export const Route = createFileRoute('/_authenticated/overview/')({
+export const Route = createFileRoute('/_organizer/overview/')({
   beforeLoad: ({ context }) => {
     if (!context.user) {
       throw redirect({
@@ -36,6 +36,11 @@ function Overview() {
   const { events } = Route.useLoaderData()
   const navigate = useNavigate()
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    navigate({ to: '/login' })
+  }
+
   return (
     <div className="min-h-dvh bg-gray-50">
       {/* HEADER */}
@@ -55,9 +60,7 @@ function Overview() {
         <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-4">
           <button
             type="button"
-            onClick={async () => {
-              await supabase.auth.signOut()
-            }}
+            onClick={handleLogout}
             className="
               flex
               h-11

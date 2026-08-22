@@ -10,19 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as OrganizerRouteRouteImport } from './routes/_organizer/route'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
-import { Route as AuthenticatedCreateEventIndexRouteImport } from './routes/_authenticated/create-event/index'
-import { Route as AuthenticatedOverviewIndexRouteImport } from './routes/_authenticated/overview/index'
-import { Route as AuthenticatedOverviewEventIdRouteImport } from './routes/_authenticated/overview/$eventId'
+import { Route as OrganizerCreateEventIndexRouteImport } from './routes/_organizer/create-event/index'
+import { Route as OrganizerOverviewIndexRouteImport } from './routes/_organizer/overview/index'
+import { Route as OrganizerOverviewEventIdRouteImport } from './routes/_organizer/overview/$eventId'
+import { Route as AttendeeAccessAccessTokenRouteImport } from './routes/attendee/access/$accessToken'
+import { Route as AttendeeTestTestTokenRouteImport } from './routes/attendee/test/$testToken'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const OrganizerRouteRoute = OrganizerRouteRouteImport.update({
+  id: '/_organizer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginIndexRoute = LoginIndexRouteImport.update({
@@ -30,68 +32,101 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedCreateEventIndexRoute =
-  AuthenticatedCreateEventIndexRouteImport.update({
+const OrganizerCreateEventIndexRoute =
+  OrganizerCreateEventIndexRouteImport.update({
     id: '/create-event/',
     path: '/create-event/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => OrganizerRouteRoute,
   } as any)
-const AuthenticatedOverviewIndexRoute =
-  AuthenticatedOverviewIndexRouteImport.update({
-    id: '/overview/',
-    path: '/overview/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedOverviewEventIdRoute =
-  AuthenticatedOverviewEventIdRouteImport.update({
+const OrganizerOverviewIndexRoute = OrganizerOverviewIndexRouteImport.update({
+  id: '/overview/',
+  path: '/overview/',
+  getParentRoute: () => OrganizerRouteRoute,
+} as any)
+const OrganizerOverviewEventIdRoute =
+  OrganizerOverviewEventIdRouteImport.update({
     id: '/overview/$eventId',
     path: '/overview/$eventId',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => OrganizerRouteRoute,
   } as any)
+const AttendeeAccessAccessTokenRoute =
+  AttendeeAccessAccessTokenRouteImport.update({
+    id: '/attendee/access/$accessToken',
+    path: '/attendee/access/$accessToken',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AttendeeTestTestTokenRoute = AttendeeTestTestTokenRouteImport.update({
+  id: '/attendee/test/$testToken',
+  path: '/attendee/test/$testToken',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login/': typeof LoginIndexRoute
-  '/overview/$eventId': typeof AuthenticatedOverviewEventIdRoute
-  '/create-event/': typeof AuthenticatedCreateEventIndexRoute
-  '/overview/': typeof AuthenticatedOverviewIndexRoute
+  '/overview/$eventId': typeof OrganizerOverviewEventIdRoute
+  '/attendee/access/$accessToken': typeof AttendeeAccessAccessTokenRoute
+  '/attendee/test/$testToken': typeof AttendeeTestTestTokenRoute
+  '/create-event/': typeof OrganizerCreateEventIndexRoute
+  '/overview/': typeof OrganizerOverviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginIndexRoute
-  '/overview/$eventId': typeof AuthenticatedOverviewEventIdRoute
-  '/create-event': typeof AuthenticatedCreateEventIndexRoute
-  '/overview': typeof AuthenticatedOverviewIndexRoute
+  '/overview/$eventId': typeof OrganizerOverviewEventIdRoute
+  '/attendee/access/$accessToken': typeof AttendeeAccessAccessTokenRoute
+  '/attendee/test/$testToken': typeof AttendeeTestTestTokenRoute
+  '/create-event': typeof OrganizerCreateEventIndexRoute
+  '/overview': typeof OrganizerOverviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_organizer': typeof OrganizerRouteRouteWithChildren
   '/login/': typeof LoginIndexRoute
-  '/_authenticated/overview/$eventId': typeof AuthenticatedOverviewEventIdRoute
-  '/_authenticated/create-event/': typeof AuthenticatedCreateEventIndexRoute
-  '/_authenticated/overview/': typeof AuthenticatedOverviewIndexRoute
+  '/_organizer/overview/$eventId': typeof OrganizerOverviewEventIdRoute
+  '/attendee/access/$accessToken': typeof AttendeeAccessAccessTokenRoute
+  '/attendee/test/$testToken': typeof AttendeeTestTestTokenRoute
+  '/_organizer/create-event/': typeof OrganizerCreateEventIndexRoute
+  '/_organizer/overview/': typeof OrganizerOverviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/login/' | '/overview/$eventId' | '/create-event/' | '/overview/'
+    | '/'
+    | '/login/'
+    | '/overview/$eventId'
+    | '/attendee/access/$accessToken'
+    | '/attendee/test/$testToken'
+    | '/create-event/'
+    | '/overview/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/overview/$eventId' | '/create-event' | '/overview'
+  to:
+    | '/'
+    | '/login'
+    | '/overview/$eventId'
+    | '/attendee/access/$accessToken'
+    | '/attendee/test/$testToken'
+    | '/create-event'
+    | '/overview'
   id:
     | '__root__'
     | '/'
-    | '/_authenticated'
+    | '/_organizer'
     | '/login/'
-    | '/_authenticated/overview/$eventId'
-    | '/_authenticated/create-event/'
-    | '/_authenticated/overview/'
+    | '/_organizer/overview/$eventId'
+    | '/attendee/access/$accessToken'
+    | '/attendee/test/$testToken'
+    | '/_organizer/create-event/'
+    | '/_organizer/overview/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  OrganizerRouteRoute: typeof OrganizerRouteRouteWithChildren
   LoginIndexRoute: typeof LoginIndexRoute
+  AttendeeAccessAccessTokenRoute: typeof AttendeeAccessAccessTokenRoute
+  AttendeeTestTestTokenRoute: typeof AttendeeTestTestTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -103,11 +138,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
+    '/_organizer': {
+      id: '/_organizer'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      preLoaderRoute: typeof OrganizerRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/': {
@@ -117,49 +152,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/create-event/': {
-      id: '/_authenticated/create-event/'
+    '/_organizer/create-event/': {
+      id: '/_organizer/create-event/'
       path: '/create-event'
       fullPath: '/create-event/'
-      preLoaderRoute: typeof AuthenticatedCreateEventIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof OrganizerCreateEventIndexRouteImport
+      parentRoute: typeof OrganizerRouteRoute
     }
-    '/_authenticated/overview/': {
-      id: '/_authenticated/overview/'
+    '/_organizer/overview/': {
+      id: '/_organizer/overview/'
       path: '/overview'
       fullPath: '/overview/'
-      preLoaderRoute: typeof AuthenticatedOverviewIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof OrganizerOverviewIndexRouteImport
+      parentRoute: typeof OrganizerRouteRoute
     }
-    '/_authenticated/overview/$eventId': {
-      id: '/_authenticated/overview/$eventId'
+    '/_organizer/overview/$eventId': {
+      id: '/_organizer/overview/$eventId'
       path: '/overview/$eventId'
       fullPath: '/overview/$eventId'
-      preLoaderRoute: typeof AuthenticatedOverviewEventIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof OrganizerOverviewEventIdRouteImport
+      parentRoute: typeof OrganizerRouteRoute
+    }
+    '/attendee/access/$accessToken': {
+      id: '/attendee/access/$accessToken'
+      path: '/attendee/access/$accessToken'
+      fullPath: '/attendee/access/$accessToken'
+      preLoaderRoute: typeof AttendeeAccessAccessTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/attendee/test/$testToken': {
+      id: '/attendee/test/$testToken'
+      path: '/attendee/test/$testToken'
+      fullPath: '/attendee/test/$testToken'
+      preLoaderRoute: typeof AttendeeTestTestTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedOverviewEventIdRoute: typeof AuthenticatedOverviewEventIdRoute
-  AuthenticatedCreateEventIndexRoute: typeof AuthenticatedCreateEventIndexRoute
-  AuthenticatedOverviewIndexRoute: typeof AuthenticatedOverviewIndexRoute
+interface OrganizerRouteRouteChildren {
+  OrganizerOverviewEventIdRoute: typeof OrganizerOverviewEventIdRoute
+  OrganizerCreateEventIndexRoute: typeof OrganizerCreateEventIndexRoute
+  OrganizerOverviewIndexRoute: typeof OrganizerOverviewIndexRoute
 }
 
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedOverviewEventIdRoute: AuthenticatedOverviewEventIdRoute,
-  AuthenticatedCreateEventIndexRoute: AuthenticatedCreateEventIndexRoute,
-  AuthenticatedOverviewIndexRoute: AuthenticatedOverviewIndexRoute,
+const OrganizerRouteRouteChildren: OrganizerRouteRouteChildren = {
+  OrganizerOverviewEventIdRoute: OrganizerOverviewEventIdRoute,
+  OrganizerCreateEventIndexRoute: OrganizerCreateEventIndexRoute,
+  OrganizerOverviewIndexRoute: OrganizerOverviewIndexRoute,
 }
 
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+const OrganizerRouteRouteWithChildren = OrganizerRouteRoute._addFileChildren(
+  OrganizerRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  OrganizerRouteRoute: OrganizerRouteRouteWithChildren,
   LoginIndexRoute: LoginIndexRoute,
+  AttendeeAccessAccessTokenRoute: AttendeeAccessAccessTokenRoute,
+  AttendeeTestTestTokenRoute: AttendeeTestTestTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

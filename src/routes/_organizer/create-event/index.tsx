@@ -3,7 +3,7 @@ import { useState } from 'react'
 import BackChevron from '../../../icons/back-chevron'
 import { supabase } from '#/lib/supabase'
 
-export const Route = createFileRoute('/_authenticated/create-event/')({
+export const Route = createFileRoute('/_organizer/create-event/')({
   component: CreateEvent,
 })
 

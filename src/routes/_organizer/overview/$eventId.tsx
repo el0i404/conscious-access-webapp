@@ -9,7 +9,7 @@ import { useState } from 'react'
 import BackChevron from '../../../icons/back-chevron'
 import { supabase } from '#/lib/supabase'
 
-export const Route = createFileRoute('/_authenticated/overview/$eventId')({
+export const Route = createFileRoute('/_organizer/overview/$eventId')({
   beforeLoad: ({ context }) => {
     if (!context.user) {
       throw redirect({
@@ -59,8 +59,15 @@ function EditEvent() {
     eventName.trim() && eventDate && startTime && location.trim(),
   )
 
+  const hasChanges =
+    eventName !== (event.event_name ?? '') ||
+    eventDate !== (event.event_date ?? '') ||
+    startTime !== (event.start_time ?? '') ||
+    endTime !== (event.end_time ?? '') ||
+    location !== (event.location ?? '')
+
   const handleSave = async () => {
-    if (!canSave || isSaving) return
+    if (!hasChanges || isSaving) return
 
     setIsSaving(true)
     setErrorMessage('')
@@ -103,7 +110,12 @@ function EditEvent() {
     setIsDeleting(true)
     setErrorMessage('')
 
-    const { error } = await supabase.from('events').delete().eq('id', event.id)
+    const { error, data } = await supabase
+      .from('events')
+      .delete()
+      .eq('id', event.id)
+      .select()
+    console.log('data', data)
 
     if (error) {
       console.error('Error deleting event:', error)
@@ -369,7 +381,7 @@ function EditEvent() {
         <div className="mx-auto w-full max-w-xl p-4">
           <button
             type="button"
-            disabled={!canSave || isSaving || isDeleting}
+            disabled={!hasChanges || isSaving || isDeleting}
             onClick={handleSave}
             className="
               flex
